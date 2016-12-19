@@ -148,14 +148,14 @@ class Link:
         R = self.getResidualLevel(msg = msg, sumSat = self.newSumSat,\
                                       numSat = self.newNumSat, numUnsat = self.newNumUnsat)
         B = R
-        if self.maxSat > B:
+        if round(self.maxSat) > round(B):
             B = self.maxSat
 
 #         print "residual level at link " + str(self.linkId) +\
 #             " is " + str(R) + ", maxSat is " + str(self.maxSat) +\
 #             " so B is " + str(B)
 
-        if msg.minB > B:
+        if round(msg.minB) > round(B):
             msg.minB = B
             msg.minBT = self.linkId
         return
@@ -193,7 +193,7 @@ class Link:
 
         R = self.getResidualLevel(msg=msg, numSat=self.numSat,\
                                       numUnsat=self.numUnsat, sumSat = self.sumSat)
-        if (msg.AR < R):
+        if (round(msg.AR) < round(R)):
             print("Flow " + str(msg.flowId) + " marked SAT at link " + str(self.linkId) +\
                       " because AR " + str(msg.AR) + " is less than oldR " + str(R))
             # flow should be marked SAT at AR now
@@ -202,7 +202,7 @@ class Link:
             # update sumSat/ numSat
             self.newSumSat += msg.AR * msg.numFlows
             self.newNumSat += msg.numFlows
-            if msg.AR > self.maxSat:
+            if round(msg.AR) > round(self.maxSat):
                 self.maxSat = msg.AR
             
         else:
@@ -225,11 +225,11 @@ class Link:
 def run(maxRounds, maxEvents, links, flows):
     linkList = sorted(links.keys())
     flowList = sorted(flows.keys())
-    for i in flowList:
-        flows[i].show()
+    #for i in flowList:
+        #flows[i].show()
 
-    for i in linkList:
-        links[i].show()
+    #for i in linkList:
+        #links[i].show()
 
     ev = 0
     round = 0
@@ -256,15 +256,15 @@ def run(maxRounds, maxEvents, links, flows):
 
             # show messages and link state at end of round
             print "\n At the end of Round " + str(round) + ", pass " + str(type)
-            for linkId in linkList:
-                links[linkId].show()
+            #for linkId in linkList:
+                #links[linkId].show()
             for flowId in flowList:
                 newMsgs.append(flows[flowId].getString())
-                flows[flowId].show()
+                #flows[flowId].show()
 
             # check if converged
             if (type == 1):
-                if len(oldMsgs) > 0:
+                if len(oldMsgs) > 0:                    
                     if str(newMsgs) == str(oldMsgs):
                         print "converged after %d rounds (%d events)" % (round, ev)
                         sys.exit(0)
@@ -273,6 +273,6 @@ def run(maxRounds, maxEvents, links, flows):
             # end of for type in ..
         round += 1
         # end of for round in ..
-
+    print("ending ev is " + str(ev) + ", round is " + str(round))
 
 

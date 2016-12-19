@@ -7,8 +7,8 @@ import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument("--cap", type = str, default = None)
 parser.add_argument("--tm", type = str, default = None)
-parser.add_argument("--r", type = int, default = 10)
-parser.add_argument("--ev", type = int, default = 200)
+parser.add_argument("--r", type = int, default = 100)
+parser.add_argument("--ev", type = int, default = 2000000)
 
 args = parser.parse_args()
 
@@ -30,6 +30,9 @@ def main():
     if args.tm is not None:
         flows = get_flows(args.tm)  
 
-    run(maxEvents = args.ev, maxRounds = args.r, links = links, flows = flows)
+    if len(flows) == 0:
+        print "No flows."
+    else:
+        run(maxEvents = args.ev, maxRounds = args.r, links = links, flows = flows)
 
 main()

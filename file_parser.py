@@ -1,4 +1,4 @@
-from sync_fru import *
+from frugal1 import *
 
 def get_cap(cap_file):
     f = open(cap_file, "r")
@@ -19,7 +19,7 @@ def get_flows(tm_file):
         if pathStr in flows:
             flows[pathStr].numFlows += 1
         else:
-            pathList = pathStr.split(" ")
+            pathList = pathStr.split(" ")[1:-1]
             flows[pathStr] = Msg(pathStr, 1, pathList)
     print "finished parsing tm file to get " + str(flows)
     return flows

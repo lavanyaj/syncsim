@@ -52,7 +52,7 @@ def cpg(maxRounds, maxEvents, links, flows):
         
     coLinks = {}
     for link in flowsPerLink:
-        listFlows = sorted(flowsPerLink.keys())
+        listFlows = sorted(flowsPerLink[link].keys())
         flowsPerLink[link] = listFlows
         coLinks[link] = []
 
@@ -109,12 +109,14 @@ def cpg(maxRounds, maxEvents, links, flows):
                 continue
             assert(round(C)> 0)
             
-            N = 0
+            
             if linkId not in flowsPerLink:
                 activeLinks[linkId] = False
                 linksRemovedSp.append((linkId, "no flows", level))
                 continue
-            for f in flowsPerLink:
+
+            N = 0
+            for f in flowsPerLink[linkId]:
                 if f in activeFlows and activeFlows[f]:
                     N += flows[f].numFlows
             if (N == 0):
@@ -129,6 +131,8 @@ def cpg(maxRounds, maxEvents, links, flows):
 
         # all active links check if they're minimum
         for linkId in activeLinks:
+            if not activeLinks[linkId]:
+                continue
             assert(linkId in currentLinkRates)
             rates = []
             assert(linkId in coLinks)
@@ -147,9 +151,20 @@ def cpg(maxRounds, maxEvents, links, flows):
         # alternative: for each link: for each flow check active : for each link in path check active
         # versus this: for each link: for each co-link check active: for each common flow check active ..
         for linkId in currentMinLinks:
-
-            for otherLink in coLink[linkId]:
-                if otherLink not in activeLinks:
+            # Fill in bottleneck info in link struct
+            # sumSat, numUnsat and numSat
+            links[linkId].sumSat = links[linkId].C - activeLinkCapacities[linkId]
+            N = 0
+            for f in flowsPerLink[linkId]:
+                if f in activeFlows and activeFlows[f]:
+                    N += flows[f].numFlows
+            assert(N > 0)
+            links[linkId].numUnsat = N
+            links[linkId].numSat = len(flowsPerLink[linkId]) - N
+            links[linkId].level = level
+            
+            for otherLink in coLinks[linkId]:
+                if otherLink not in activeLinks or not activeLinks[otherLink]:
                     # could be some link that became inactive
                     # during this loop, once its active cap hit 0
                     continue
@@ -158,13 +173,15 @@ def cpg(maxRounds, maxEvents, links, flows):
                     key = (otherLink, linkId)
                 assert(key in flowsPerLinkPair)
                 numCommon = 0
-                for f in flowsPerLinkPair:
+                for f in flowsPerLinkPair[key]:
                     if f in activeFlows and activeFlows[f]:
-                        numCommon += 1
+                        numCommon += flows[f].numFlows
                         # don't mark this flow inactive yet,
                         # since we need to remove it from more
                         # colinks
                 if numCommon > 0:
+                    print ("Links %s have %d active flows in common, sat @ rate %d" %\
+                               (str(key), numCommon, currentLinkRates[linkId]))
                     totalAlloc = numCommon * currentLinkRates[linkId]
                     activeLinkCapacities[otherLink] -= totalAlloc
                     if round(activeLinkCapacities[otherLink]) == 0:
@@ -174,11 +191,19 @@ def cpg(maxRounds, maxEvents, links, flows):
                         activeLinkCapacities[otherLink] = 0
                         # activeLinks[otherLink] = False
                         # linksRemovedSp.append((linkId, "active cap became 0", level))
+
         for linkId in currentMinLinks:
+            assert(links[linkId].numUnsat > 0)
+            R = (links[linkId].C - links[linkId].sumSat)\
+                /links[linkId].numUnsat
             for f in flowsPerLink[linkId]:
                 if (f in activeFlows and activeFlows[f]):
+                    # fill in bottleneck info for flow
+                    flows[f].AR = R
+                    flows[f].t = linkId
                     activeFlows[f] = False
                     flowsRemovedByLevel[level].append(f)
+                    
             if linkId in activeLinks and activeLinks[linkId]:
                 activeLinks[linkId] = False
                 linksRemovedByLevel[level].append(linkId)

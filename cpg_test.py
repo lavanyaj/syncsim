@@ -37,4 +37,13 @@ def main():
     else:
         cpg(maxEvents = args.ev, maxRounds = args.r, links = links, flows = flows)
 
+    for linkId in links:
+        print "Link %s removed in level %d (sumSat %d, numUnsat %d)"%\
+            (linkId, links[linkId].level, links[linkId].sumSat, links[linkId].numUnsat)
+
+    for flowId in flows:
+        linkId = flows[flowId].t
+        print "Flow %s removed @ %d when link %s removed in level %d (sumSat %d, numUnsat %d)"%\
+            (flowId, flows[flowId].AR, linkId, links[linkId].level, links[linkId].sumSat, links[linkId].numUnsat)
+
 main()

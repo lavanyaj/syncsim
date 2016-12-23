@@ -8,7 +8,7 @@ def get_cap(cap_file):
         linkStr, cap = line.split(" ")
         cap = float(cap)
         links[linkStr] = Link(linkStr, cap)
-    print "finished parsing cap file to get " + str(links)
+    #print "finished parsing cap file to get " + str(links)
     return links
 
 def get_flows(tm_file):
@@ -21,6 +21,6 @@ def get_flows(tm_file):
         else:
             pathList = pathStr.split(" ")[1:-1]
             flows[pathStr] = Msg(pathStr, 1, pathList)
-    print "finished parsing tm file to get " + str(flows)
+    #print "finished parsing tm file to get " + str(flows)
     return flows
 

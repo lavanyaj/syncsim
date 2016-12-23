@@ -180,7 +180,7 @@ class Link:
                 tmpNumSat -= msg.numFlows
         elif (self.linkId not in msg.oldAlloc) and (self.linkId not in msg.oldLabels):            
             # new flow
-            print "new flow"
+            #print "new flow"
             tmpNumUnsat += msg.numFlows
             
         assert(tmpNumUnsat > 0)
@@ -194,8 +194,8 @@ class Link:
         R = self.getResidualLevel(msg=msg, numSat=self.numSat,\
                                       numUnsat=self.numUnsat, sumSat = self.sumSat)
         if (round(msg.AR) < round(R)):
-            print("Flow " + str(msg.flowId) + " marked SAT at link " + str(self.linkId) +\
-                      " because AR " + str(msg.AR) + " is less than oldR " + str(R))
+            # print("Flow " + str(msg.flowId) + " marked SAT at link " + str(self.linkId) +\
+            #           " because AR " + str(msg.AR) + " is less than oldR " + str(R))
             # flow should be marked SAT at AR now
             msg.alloc[self.linkId] = msg.AR
             msg.labels[self.linkId] = SAT
@@ -210,8 +210,8 @@ class Link:
             msg.labels[self.linkId] = UNSAT
             msg.alloc[self.linkId] = None
             self.newNumUnsat += msg.numFlows
-            print("Flow " + str(msg.flowId) + " marked UNSAT at link " + str(self.linkId) +\
-                      " because AR " + str(msg.AR) + " is >= than oldR" + str(R))
+            # print("Flow " + str(msg.flowId) + " marked UNSAT at link " + str(self.linkId) +\
+            #           " because AR " + str(msg.AR) + " is >= than oldR" + str(R))
 
             
 
@@ -250,12 +250,12 @@ def run(maxRounds, maxEvents, links, flows):
             # for each flow, process packet on each hop (order doesn't matter for now)
             for flowId in flowList:
                 for linkId in flows[flowId].path:
-                    print "handle msg of " + str(flowId) + " at " + str(linkId) + " type of msg " + str(flows[flowId].type)
+                    #print "handle msg of " + str(flowId) + " at " + str(linkId) + " type of msg " + str(flows[flowId].type)
                     links[linkId].handleMsg(flows[flowId])
                     ev += 1
 
             # show messages and link state at end of round
-            print "\n At the end of Round " + str(round) + ", pass " + str(type)
+            #print "\n At the end of Round " + str(round) + ", pass " + str(type)
             #for linkId in linkList:
                 #links[linkId].show()
             for flowId in flowList:

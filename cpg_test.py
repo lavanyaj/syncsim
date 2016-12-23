@@ -43,6 +43,9 @@ def main():
 
     for flowId in flows:
         linkId = flows[flowId].t
+        if (linkId == -1):
+            print " no bottleneck link for " + str(flowId)
+            continue
         print "Flow %s removed @ %d when link %s removed in level %d (sumSat %d, numUnsat %d)"%\
             (flowId, flows[flowId].AR, linkId, links[linkId].level, links[linkId].sumSat, links[linkId].numUnsat)
 

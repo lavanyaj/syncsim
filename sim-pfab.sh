@@ -1,5 +1,5 @@
 #!/bin/sh
-NUM_RUNS=1
+NUM_RUNS=1000
 MAX_EVENTS=2000000
 
 

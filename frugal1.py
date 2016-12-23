@@ -88,6 +88,9 @@ class Link:
         # link fills in, in round 2 and uses to calculate
         # different B per flow (maxSat includes flow's own sat!!?)
         self.maxSat = 0
+
+        # metadata: when link "converged"
+        self.level = INFINITY
         return
 
     def setType(self, type):

@@ -1,8 +1,8 @@
 from cpg import *
-
 from file_parser import *
 from frugal1 import * # for default links and flows
 import argparse
+from output_logger import *
 
 # use like python frugal1_test.py --cap sam-cap.txt --tm sam-tm.txt
 
@@ -37,16 +37,5 @@ def main():
     else:
         cpg(maxEvents = args.ev, maxRounds = args.r, links = links, flows = flows)
 
-    for linkId in links:
-        print "Link %s removed in level %d (sumSat %d, numUnsat %d)"%\
-            (linkId, links[linkId].level, links[linkId].sumSat, links[linkId].numUnsat)
-
-    for flowId in flows:
-        linkId = flows[flowId].t
-        if (linkId == -1):
-            print " no bottleneck link for " + str(flowId)
-            continue
-        print "Flow %s removed @ %d when link %s removed in level %d (sumSat %d, numUnsat %d)"%\
-            (flowId, flows[flowId].AR, linkId, links[linkId].level, links[linkId].sumSat, links[linkId].numUnsat)
-
+    output_log(links, flows)
 main()

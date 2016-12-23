@@ -1,6 +1,7 @@
 from frugal1 import *
 from file_parser import *
 import argparse
+from output_logger import *
 
 # use like python frugal1_test.py --cap sam-cap.txt --tm sam-tm.txt
 
@@ -34,5 +35,7 @@ def main():
         print "No flows."
     else:
         run(maxEvents = args.ev, maxRounds = args.r, links = links, flows = flows)
+
+    output_log(links, flows)
 
 main()

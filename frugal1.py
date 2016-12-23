@@ -239,16 +239,16 @@ def run(maxRounds, maxEvents, links, flows):
     
     oldMsgs = []
     newMsgs = []
-    print "Flows starting"
+    #print "Flows starting"
     while (round < maxRounds and ev < maxEvents):
-        print "\nRound " + str(round)
+        #print "\nRound " + str(round)
         for type in range(1,3):
             # change type of link/ flow to forward(1) or backward(2)
             for flowId in flowList:
                 flows[flowId].setType(type)
             for linkId in linkList:
                 links[linkId].setType(type)
-            print "\nPass " + str(type)
+            #print "\nPass " + str(type)
 
             # for each flow, process packet on each hop (order doesn't matter for now)
             for flowId in flowList:
@@ -270,7 +270,7 @@ def run(maxRounds, maxEvents, links, flows):
                 if len(oldMsgs) > 0:                    
                     if str(newMsgs) == str(oldMsgs):
                         print "converged after %d rounds (%d events)" % (round, ev)
-                        sys.exit(0)
+                        return
                 oldMsgs = copy.deepcopy(newMsgs)
                 newMsgs = []
             # end of for type in ..
